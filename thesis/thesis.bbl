@@ -1,0 +1,27 @@
+\begin{thebibliography}{xx}
+
+\harvarditem{Howard \harvardand\
+  Ruder}{2018}{DBLP:journals/corr/abs-1801-06146}
+Howard, J. \harvardand\ Ruder, S.  \harvardyearleft 2018\harvardyearright ,
+  `Fine-tuned language models for text classification', {\em CoRR} {\bf
+  abs/1801.06146}.
+\newline\harvardurl{http://arxiv.org/abs/1801.06146}
+
+\harvarditem[Lai et~al.]{Lai, Xu, Liu \harvardand\ Zhao}{2015}{AAAI159745}
+Lai, S., Xu, L., Liu, K. \harvardand\ Zhao, J.  \harvardyearleft
+  2015\harvardyearright , `Recurrent convolutional neural networks for text
+  classification'.
+\newline\harvardurl{https://www.aaai.org/ocs/index.php/AAAI/AAAI15/paper/view/9745}
+
+\harvarditem{{\em Papers With Code Emotion
+  Classification}}{2019}{paperswithcode}
+{\em Papers With Code Emotion Classification}  \harvardyearleft
+  2019\harvardyearright .
+\newline\harvardurl{https://paperswithcode.com/task/emotion-classification}
+
+\harvarditem{Shams}{1970}{shams_1970}
+Shams, R.  \harvardyearleft 1970\harvardyearright , `Micro- and macro-average
+  of precision, recall and f-score'.
+\newline\harvardurl{https://rushdishams.blogspot.com/2011/08/micro-and-macro-average-of-precision.html}
+
+\end{thebibliography}
