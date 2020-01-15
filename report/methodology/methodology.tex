@@ -4,7 +4,7 @@ This chapter details the experimental setup for carrying out the task of classif
 
 \section{Data}
 
-This study makes use of the ISEAR dataset (International Survey on Emotion Antecedents And Reactions) which consists of 3000 responses from people around the world who report situations where they experienced each of the emotions from (joy, fear, anger, sadness, disgust, shame, and guilt). The dataset is split such that 80\% is assigned to the training set, 10\% to the validation set and the last 10\% to the testing set. 
+This study makes use of both the \textit{ISEAR} (International Survey on Emotion Antecedents And Reactions) and \textit{SemEval-2018 Affect In Tweets} datasets. The ISEAR dataset consists of 3000 responses from people around the world who report situations where they experienced each of the emotions from (joy, fear, anger, sadness, disgust, shame, and guilt). The dataset is split such that 80\% is assigned to the training set, 10\% to the validation set and the last 10\% to the testing set. 
 
 \subsection{Pre-trained Word Embeddings \& Language Models}
 
@@ -35,6 +35,9 @@ The embedding layer is initialized using pre-trained Word2Vec, ELMo and BERT emb
   \label{fig:bert-model}
 \end{figure}
 
+\noindent
+Furthermore, we compare the result of the above mentioned Deep Learning models to that of machine learning algorithms such as Logistic Regression. We apply the machine learning algorithms using Term Frequency Inverse Document Frequency (TF-IDF) as a means to convert text into vector form. 
+
 \section{Performance Evaluation}
 
 This study evaluates the performance of all models using accuracy and the micro and macro F1 scores. We specifically optimize each model with the micro and macro F1 scores in mind. This is because the dataset consists of labels with more instances than others. Furthermore, the micro and macro F1 scores have been used in various other papers that tackle the task of emotion classification from text \citep{paperswithcode}. Therefore, these metrics provide a good comparison for the overall performance of the models implemented in this study. 
@@ -63,7 +66,7 @@ This study evaluates the performance of all models using accuracy and the micro 
 
 \section{Technologies}
 
-The experiment makes use of Python along with Tensorflow and Keras for constructing the architecture of the models. Both the Natural Language Toolkit (NLTK), and Keras Tokenizer libraries are used for text pre-processing. The Scikit learn and Pandas libraries are used for data analysis whilst Matplotlib is used for data visualization. 
+The experiment makes use of Python along with Tensorflow and Keras for constructing the architecture of the models. Both the Natural Language Toolkit (NLTK), and Keras Tokenizer libraries are used for text pre-processing. The Scikit learn library is used for the implementation of machine learning models. 
 
 
 
