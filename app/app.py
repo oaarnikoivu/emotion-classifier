@@ -54,7 +54,7 @@ def form_post():
         vectorizer to it and predicts emotion using trained logistic regression models.
     """
 
-    text = request.form['text']
+    text = request.json
 
     comment_term_doc = vectorizer.transform([text])
 
@@ -77,19 +77,21 @@ def form_post():
         perc = dict_preds[k] * 100
         dict_preds[k] = '{0:.2f}%'.format(perc)
 
-    return render_template('main.html', text=text,
-                           pred_anger=dict_preds['pred_anger'],
-                           pred_anticipation=dict_preds['pred_anticipation'],
-                           pred_disgust=dict_preds['pred_disgust'],
-                           pred_fear=dict_preds['pred_fear'],
-                           pred_joy=dict_preds['pred_joy'],
-                           pred_love=dict_preds['pred_love'],
-                           pred_optimism=dict_preds['pred_optimism'],
-                           pred_pessimism=dict_preds['pred_pessimism'],
-                           pred_sadness=dict_preds['pred_sadness'],
-                           pred_surprise=dict_preds['pred_surprise'],
-                           pred_trust=dict_preds['pred_trust'],
-                           emotion_val=max_val)
+    return jsonify(dict_preds)
+
+    # return render_template('main.html', text=text,
+    #                        pred_anger=dict_preds['pred_anger'],
+    #                        pred_anticipation=dict_preds['pred_anticipation'],
+    #                        pred_disgust=dict_preds['pred_disgust'],
+    #                        pred_fear=dict_preds['pred_fear'],
+    #                        pred_joy=dict_preds['pred_joy'],
+    #                        pred_love=dict_preds['pred_love'],
+    #                        pred_optimism=dict_preds['pred_optimism'],
+    #                        pred_pessimism=dict_preds['pred_pessimism'],
+    #                        pred_sadness=dict_preds['pred_sadness'],
+    #                        pred_surprise=dict_preds['pred_surprise'],
+    #                        pred_trust=dict_preds['pred_trust'],
+    #                        emotion_val=max_val)
 
 
 if __name__ == '__main__':

@@ -1,3 +1,4 @@
 export interface EmotionProps {
-	emotions: string[];
+	emotion?: string;
+	onNewText?: any;
 }
