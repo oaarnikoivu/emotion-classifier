@@ -1,6 +1,6 @@
 import os
 import pickle
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 
 app = Flask(__name__)
 basepath = os.path.abspath("./")
@@ -32,6 +32,14 @@ with open(basepath + '/models/logistic_surprise.pkl', 'rb') as logistic_surprise
     logistic_surprise_model = pickle.load(logistic_surprise_file)
 with open(basepath + '/models/logistic_trust.pkl', 'rb') as logistic_trust_file:
     logistic_trust_model = pickle.load(logistic_trust_file)
+
+
+@app.route('/emotions')
+def show_emotions():
+    my_dict = {
+        'Test': 'test'
+    }
+    return jsonify(my_dict)
 
 
 @app.route('/')
