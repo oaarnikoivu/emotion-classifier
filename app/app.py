@@ -3,7 +3,7 @@ import pickle
 from flask import Flask, request, render_template
 
 app = Flask(__name__)
-basepath = os.path.abspath(("./"))
+basepath = os.path.abspath("./")
 
 # load vectorizer
 with open(basepath + '/models/vectorizer.pkl', 'rb') as vect_file:
