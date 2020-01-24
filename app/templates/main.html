@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Emotion Classifier</title>
+</head>
+<body>
+
+<p><strong>Emotion Classifier</strong></p>
+
+<form method="post">
+    <textarea name="text"></textarea>
+    <input type="submit">
+</form>
+
+<div>
+    Text submitted: <br />
+
+    <i>{% if text %}{{ text }}{% else %}Nothing{% endif %}</i> <br />
+
+    <br />
+    <br />
+
+    Result: <br />
+    Anger: {{ pred_anger }} <br />
+    Anticipation: {{ pred_anticipation }} <br />
+    Disgust: {{ pred_disgust }} <br />
+    Fear: {{ pred_fear }} <br />
+    Joy: {{ pred_joy }} <br />
+    Love: {{ pred_love }} <br />
+    Optimism: {{ pred_optimism }} <br />
+    Pessimism: {{ pred_pessimism }} <br />
+    Sadness: {{ pred_sadness }} <br />
+    Surprise: {{ pred_surprise }} <br />
+    Trust: {{ pred_trust }} <br />
+
+</div>
+
+</body>
+</html>

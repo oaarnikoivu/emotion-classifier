@@ -2,6 +2,7 @@ import os
 import pickle
 from flask import Flask, request, render_template
 
+app = Flask(__name__)
 basepath = os.path.abspath(("./"))
 
 # load vectorizer
@@ -32,7 +33,10 @@ with open(basepath + '/models/logistic_surprise.pkl', 'rb') as logistic_surprise
 with open(basepath + '/models/logistic_trust.pkl', 'rb') as logistic_trust_file:
     logistic_trust_model = pickle.load(logistic_trust_file)
 
-app = Flask(__name__)
+
+@app.route('/')
+def my_form():
+    return render_template('main.html')
 
 
 @app.route('/', methods=['POST'])
