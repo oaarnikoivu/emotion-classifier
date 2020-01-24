@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Input, Button } from "semantic-ui-react";
-import { EmotionProps } from "./emotions_interfaces";
+import { EmotionProps, Emotions } from "./emotions_interfaces";
 
 export const EmotionForm: React.FC<EmotionProps> = (props: EmotionProps) => {
 	const [text, setText] = useState("");
@@ -8,7 +8,11 @@ export const EmotionForm: React.FC<EmotionProps> = (props: EmotionProps) => {
 	return (
 		<Form>
 			<Form.Field>
-				<Input placeholder='Text' value={text} onChange={e => setText(e.target.value)} />
+				<Input
+					placeholder='How emotional are you?'
+					value={text}
+					onChange={e => setText(e.target.value)}
+				/>
 			</Form.Field>
 			<Form.Field>
 				<Button
@@ -23,13 +27,45 @@ export const EmotionForm: React.FC<EmotionProps> = (props: EmotionProps) => {
 						});
 
 						if (response.ok) {
-							console.log("Response worked!");
-
-							response.json().then(preds => {
-								console.log(preds);
+							// retrieve prediction
+							response.json().then(prediction => {
+								switch (prediction) {
+									case Emotions.ANGER:
+										props.onNewText("Anger");
+										break;
+									case Emotions.ANTICIPATION:
+										props.onNewText("Anticipation");
+										break;
+									case Emotions.DISGUST:
+										props.onNewText("Disgust");
+										break;
+									case Emotions.FEAR:
+										props.onNewText("Fear");
+										break;
+									case Emotions.JOY:
+										props.onNewText("Joy");
+										break;
+									case Emotions.LOVE:
+										props.onNewText("Love");
+										break;
+									case Emotions.OPTIMISM:
+										props.onNewText("Optimism");
+										break;
+									case Emotions.PESSIMISM:
+										props.onNewText("Pessimism");
+										break;
+									case Emotions.SADNESS:
+										props.onNewText("Sadness");
+										break;
+									case Emotions.SURPRISE:
+										props.onNewText("Surprise");
+										break;
+									case Emotions.TRUST:
+										props.onNewText("Trust");
+										break;
+								}
 							});
 
-							props.onNewText(text);
 							setText("");
 						}
 					}}>

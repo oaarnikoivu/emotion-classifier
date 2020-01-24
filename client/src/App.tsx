@@ -10,22 +10,20 @@ const App: React.FC = () => {
 	useEffect(() => {
 		fetch("/emotions").then(response => {
 			response.json().then(data => {
-				setEmotion(data.Test);
+				setEmotion(data.prediction);
 			});
 		});
 	}, []);
 
 	return (
-		<div className='App'>
-			<Container style={{ marginTop: 40 }}>
-				<EmotionForm
-					onNewText={(text: string) => {
-						setEmotion(text);
-					}}
-				/>
-				<Emotions emotion={emotion} />
-			</Container>
-		</div>
+		<Container style={{ marginTop: 40 }}>
+			<EmotionForm
+				onNewText={(text: string) => {
+					setEmotion(text);
+				}}
+			/>
+			<Emotions emotion={emotion} />
+		</Container>
 	);
 };
 
