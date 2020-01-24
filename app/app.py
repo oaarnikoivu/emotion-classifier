@@ -63,6 +63,12 @@ def form_post():
                   'pred_trust': logistic_trust_model.predict_proba(comment_term_doc)[:, 1][0]
                   }
 
+    max_val = max(dict_preds, key=dict_preds.get)
+
+    for k in dict_preds:
+        perc = dict_preds[k] * 100
+        dict_preds[k] = '{0:.2f}%'.format(perc)
+
     return render_template('main.html', text=text,
                            pred_anger=dict_preds['pred_anger'],
                            pred_anticipation=dict_preds['pred_anticipation'],
@@ -74,7 +80,8 @@ def form_post():
                            pred_pessimism=dict_preds['pred_pessimism'],
                            pred_sadness=dict_preds['pred_sadness'],
                            pred_surprise=dict_preds['pred_surprise'],
-                           pred_trust=dict_preds['pred_trust'])
+                           pred_trust=dict_preds['pred_trust'],
+                           emotion_val=max_val)
 
 
 if __name__ == '__main__':
