@@ -2,38 +2,15 @@ import os
 import pickle
 import torch
 import transformers as ppb
+from models.load_model import load_tfidf_model
 from flask import Flask, request, render_template, jsonify
 
 app = Flask(__name__)
 basepath = os.path.abspath("./")
 
 # load vectorizer
-with open(basepath + '/models/vectorizer.pkl', 'rb') as vect_file:
+with open(basepath + '/models/tfidf/vectorizer.pkl', 'rb') as vect_file:
     vectorizer = pickle.load(vect_file)
-
-# load models
-with open(basepath + '/models/logistic_anger.pkl', 'rb') as logistic_anger_file:
-    logistic_anger_model = pickle.load(logistic_anger_file)
-with open(basepath + '/models/logistic_anticipation.pkl', 'rb') as logistic_anticipation_file:
-    logistic_anticipation_model = pickle.load(logistic_anticipation_file)
-with open(basepath + '/models/logistic_disgust.pkl', 'rb') as logistic_disgust_file:
-    logistic_disgust_model = pickle.load(logistic_disgust_file)
-with open(basepath + '/models/logistic_fear.pkl', 'rb') as logistic_fear_file:
-    logistic_fear_model = pickle.load(logistic_fear_file)
-with open(basepath + '/models/logistic_joy.pkl', 'rb') as logistic_joy_file:
-    logistic_joy_model = pickle.load(logistic_joy_file)
-with open(basepath + '/models/logistic_love.pkl', 'rb') as logistic_love_file:
-    logistic_love_model = pickle.load(logistic_love_file)
-with open(basepath + '/models/logistic_optimism.pkl', 'rb') as logistic_optimism_file:
-    logistic_optimism_model = pickle.load(logistic_optimism_file)
-with open(basepath + '/models/logistic_pessimism.pkl', 'rb') as logistic_pessimism_file:
-    logistic_pessimism_model = pickle.load(logistic_pessimism_file)
-with open(basepath + '/models/logistic_sadness.pkl', 'rb') as logistic_sadness_file:
-    logistic_sadness_model = pickle.load(logistic_sadness_file)
-with open(basepath + '/models/logistic_surprise.pkl', 'rb') as logistic_surprise_file:
-    logistic_surprise_model = pickle.load(logistic_surprise_file)
-with open(basepath + '/models/logistic_trust.pkl', 'rb') as logistic_trust_file:
-    logistic_trust_model = pickle.load(logistic_trust_file)
 
 
 @app.route('/emotions')
@@ -60,17 +37,17 @@ def form_post():
 
     comment_term_doc = vectorizer.transform([text])
 
-    dict_preds = {'pred_anger': logistic_anger_model.predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_anticipation': logistic_anticipation_model.predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_disgust': logistic_disgust_model.predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_fear': logistic_fear_model.predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_joy': logistic_joy_model.predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_love': logistic_love_model.predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_optimism': logistic_optimism_model.predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_pessimism': logistic_pessimism_model.predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_sadness': logistic_sadness_model.predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_surprise': logistic_sadness_model.predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_trust': logistic_trust_model.predict_proba(comment_term_doc)[:, 1][0]
+    dict_preds = {'pred_anger': load_tfidf_model()['anger'].predict_proba(comment_term_doc)[:, 1][0],
+                  'pred_anticipation': load_tfidf_model()['anticipation'].predict_proba(comment_term_doc)[:, 1][0],
+                  'pred_disgust': load_tfidf_model()['disgust'].predict_proba(comment_term_doc)[:, 1][0],
+                  'pred_fear': load_tfidf_model()['fear'].predict_proba(comment_term_doc)[:, 1][0],
+                  'pred_joy': load_tfidf_model()['joy'].predict_proba(comment_term_doc)[:, 1][0],
+                  'pred_love': load_tfidf_model()['love'].predict_proba(comment_term_doc)[:, 1][0],
+                  'pred_optimism': load_tfidf_model()['optimism'].predict_proba(comment_term_doc)[:, 1][0],
+                  'pred_pessimism': load_tfidf_model()['pessimism'].predict_proba(comment_term_doc)[:, 1][0],
+                  'pred_sadness': load_tfidf_model()['sadness'].predict_proba(comment_term_doc)[:, 1][0],
+                  'pred_surprise': load_tfidf_model()['surprise'].predict_proba(comment_term_doc)[:, 1][0],
+                  'pred_trust': load_tfidf_model()['trust'].predict_proba(comment_term_doc)[:, 1][0]
                   }
 
     prediction = max(dict_preds.keys(), key=(lambda k: dict_preds[k]))

@@ -4,6 +4,7 @@
       <w>basepath</w>
       <w>perc</w>
       <w>preds</w>
+      <w>tfidf</w>
       <w>vectorizer</w>
     </words>
   </dictionary>
