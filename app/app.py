@@ -1,12 +1,19 @@
 import os
 import pickle
+
 import torch
-import transformers as ppb
-from models.load_model import load_tfidf_model
+
+from transformers import DistilBertModel, DistilBertTokenizer
 from flask import Flask, request, render_template, jsonify
+
+from models.load_model import load_bert_model, load_tfidf_model
 
 app = Flask(__name__)
 basepath = os.path.abspath("./")
+
+pretrained_weights = 'distilbert-base-uncased'
+tokenizer = DistilBertTokenizer.from_pretrained(pretrained_weights)
+model = DistilBertModel.from_pretrained(pretrained_weights)
 
 # load vectorizer
 with open(basepath + '/models/tfidf/vectorizer.pkl', 'rb') as vect_file:
@@ -35,19 +42,39 @@ def form_post():
 
     text = request.json
 
-    comment_term_doc = vectorizer.transform([text])
+    input_ids = torch.tensor(tokenizer.encode(text)).unsqueeze(0)
 
-    dict_preds = {'pred_anger': load_tfidf_model()['anger'].predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_anticipation': load_tfidf_model()['anticipation'].predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_disgust': load_tfidf_model()['disgust'].predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_fear': load_tfidf_model()['fear'].predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_joy': load_tfidf_model()['joy'].predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_love': load_tfidf_model()['love'].predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_optimism': load_tfidf_model()['optimism'].predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_pessimism': load_tfidf_model()['pessimism'].predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_sadness': load_tfidf_model()['sadness'].predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_surprise': load_tfidf_model()['surprise'].predict_proba(comment_term_doc)[:, 1][0],
-                  'pred_trust': load_tfidf_model()['trust'].predict_proba(comment_term_doc)[:, 1][0]
+    with torch.no_grad():
+        last_hidden_states = model(input_ids)
+        features = last_hidden_states[0][0:, 0, :].numpy()
+
+
+    # comment_term_doc = vectorizer.transform([text])
+    #
+    # dict_preds = {'pred_anger': load_tfidf_model()['anger'].predict_proba(comment_term_doc)[:, 1][0],
+    #               'pred_anticipation': load_tfidf_model()['anticipation'].predict_proba(comment_term_doc)[:, 1][0],
+    #               'pred_disgust': load_tfidf_model()['disgust'].predict_proba(comment_term_doc)[:, 1][0],
+    #               'pred_fear': load_tfidf_model()['fear'].predict_proba(comment_term_doc)[:, 1][0],
+    #               'pred_joy': load_tfidf_model()['joy'].predict_proba(comment_term_doc)[:, 1][0],
+    #               'pred_love': load_tfidf_model()['love'].predict_proba(comment_term_doc)[:, 1][0],
+    #               'pred_optimism': load_tfidf_model()['optimism'].predict_proba(comment_term_doc)[:, 1][0],
+    #               'pred_pessimism': load_tfidf_model()['pessimism'].predict_proba(comment_term_doc)[:, 1][0],
+    #               'pred_sadness': load_tfidf_model()['sadness'].predict_proba(comment_term_doc)[:, 1][0],
+    #               'pred_surprise': load_tfidf_model()['surprise'].predict_proba(comment_term_doc)[:, 1][0],
+    #               'pred_trust': load_tfidf_model()['trust'].predict_proba(comment_term_doc)[:, 1][0]
+    #               }
+
+    dict_preds = {'pred_anger': load_bert_model()['anger'].predict_proba(features)[:, 1][0],
+                  'pred_anticipation': load_bert_model()['anticipation'].predict_proba(features)[:, 1][0],
+                  'pred_disgust': load_bert_model()['disgust'].predict_proba(features)[:, 1][0],
+                  'pred_fear': load_bert_model()['fear'].predict_proba(features)[:, 1][0],
+                  'pred_joy': load_bert_model()['joy'].predict_proba(features)[:, 1][0],
+                  'pred_love': load_bert_model()['love'].predict_proba(features)[:, 1][0],
+                  'pred_optimism': load_bert_model()['optimism'].predict_proba(features)[:, 1][0],
+                  'pred_pessimism': load_bert_model()['pessimism'].predict_proba(features)[:, 1][0],
+                  'pred_sadness': load_bert_model()['sadness'].predict_proba(features)[:, 1][0],
+                  'pred_surprise': load_bert_model()['surprise'].predict_proba(features)[:, 1][0],
+                  'pred_trust': load_bert_model()['trust'].predict_proba(features)[:, 1][0]
                   }
 
     prediction = max(dict_preds.keys(), key=(lambda k: dict_preds[k]))

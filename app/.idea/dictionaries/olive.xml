@@ -2,8 +2,10 @@
   <dictionary name="olive">
     <words>
       <w>basepath</w>
+      <w>distilbert</w>
       <w>perc</w>
       <w>preds</w>
+      <w>pretrained</w>
       <w>tfidf</w>
       <w>vectorizer</w>
     </words>
