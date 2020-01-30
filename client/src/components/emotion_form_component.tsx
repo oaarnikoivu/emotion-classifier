@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Button } from "semantic-ui-react";
+import { Form, Button, TextArea } from "semantic-ui-react";
 import { EmotionProps, Emotions } from "./emotions_interfaces";
 
 export const EmotionForm: React.FC<EmotionProps> = (props: EmotionProps) => {
@@ -8,11 +8,7 @@ export const EmotionForm: React.FC<EmotionProps> = (props: EmotionProps) => {
 	return (
 		<Form>
 			<Form.Field>
-				<Input
-					placeholder='How emotional are you?'
-					value={text}
-					onChange={e => setText(e.target.value)}
-				/>
+				<TextArea value={text} onChange={e => setText(e.currentTarget.value)}></TextArea>
 			</Form.Field>
 			<Form.Field>
 				<Button
