@@ -16,14 +16,21 @@ const App: React.FC = () => {
 	}, []);
 
 	return (
-		<Container style={{ marginTop: 40 }}>
-			<EmotionForm
-				onNewText={(text: string) => {
-					setEmotion(text);
-				}}
-			/>
-			<Emotions emotion={emotion} />
-		</Container>
+		<>
+			<Container style={{ marginTop: 40 }}>
+				<div style={{ paddingBottom: 10 }}>
+					{
+						"This AI has been trained to understand emotion from Tweets. Type a sentence to see what the AI algorithm thinks."
+					}
+				</div>
+				<EmotionForm
+					onNewText={(text: string) => {
+						setEmotion(text);
+					}}
+				/>
+				<Emotions emotion={emotion} />
+			</Container>
+		</>
 	);
 };
 

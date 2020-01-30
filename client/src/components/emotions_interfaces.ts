@@ -12,6 +12,20 @@ export enum Emotions {
 	TRUST = "pred_trust"
 }
 
+export enum Emojis {
+	ANGER = "😠",
+	ANTICIPATION = "🤫",
+	DISGUST = "🤢",
+	FEAR = "😨",
+	JOY = "😀",
+	LOVE = "❤️",
+	OPTIMISM = "👍",
+	PESSIMISM = "👎",
+	SADNESS = "😢",
+	SURPRISE = "😮",
+	TRUST = "🤞"
+}
+
 export interface EmotionProps {
 	emotion?: string;
 	onNewText?: any;
