@@ -1,53 +1,97 @@
-import React from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { EmotionProps, Emotion } from "./emotions_interfaces";
+import { Form, TextArea, Button } from "semantic-ui-react";
 
-export const Emotions: React.FC<EmotionProps> = (props: EmotionProps) => {
+export const Emotions: React.FC<EmotionProps> = () => {
+	const [text, setText] = useState("");
+	const [isSending, setIsSending] = useState(false);
+	const [predictions, setPredictions] = useState([]);
+
+	const getPredictions = useCallback(async () => {
+		if (isSending) return;
+
+		setIsSending(true);
+
+		const textToSend: string = text;
+
+		if (textToSend !== "") {
+			const response: Response = await fetch("/", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(text)
+			});
+
+			if (response.ok) {
+				response.json().then((preds: any[]) => {
+					setPredictions(preds);
+				});
+			}
+
+			setText("");
+			setIsSending(false);
+		}
+	}, [isSending, predictions, text]);
+
 	return (
 		<>
+			<Form>
+				<Form.Field>
+					<TextArea
+						value={text}
+						onChange={e => {
+							setText(e.currentTarget.value);
+						}}></TextArea>
+				</Form.Field>
+				<Form.Field>
+					<Button disabled={isSending} onClick={async () => getPredictions()}>
+						Submit
+					</Button>
+				</Form.Field>
+			</Form>
 			<div style={{ marginTop: 12, marginBottom: 12, fontFamily: "Arial" }}>
-				<h5>{props.showTitle ? "Predictions: " : undefined}</h5>
-			</div>
-			<div>
-				{props.emotions.map((e: any, index: number) => {
-					let text: string = "";
-					switch (e.id) {
+				<h5>Predictions: </h5>
+				{predictions.map((p: any[], index: number) => {
+					let label: string = "";
+					switch (p[0]) {
 						case Emotion.ANGER:
-							text = "Anger";
+							label = "Anger";
 							break;
 						case Emotion.ANTICIPATION:
-							text = "Anticipation";
+							label = "Anticipation";
 							break;
 						case Emotion.DISGUST:
-							text = "Disgust";
+							label = "Disgust";
 							break;
 						case Emotion.FEAR:
-							text = "Fear";
+							label = "Fear";
 							break;
 						case Emotion.JOY:
-							text = "Joy";
+							label = "Joy";
 							break;
 						case Emotion.LOVE:
-							text = "Love";
+							label = "Love";
 							break;
 						case Emotion.OPTIMISM:
-							text = "Optimism";
+							label = "Optimism";
 							break;
 						case Emotion.PESSIMISM:
-							text = "Pessimism";
+							label = "Pessimism";
 							break;
 						case Emotion.SADNESS:
-							text = "Sadness";
+							label = "Sadness";
 							break;
 						case Emotion.SURPRISE:
-							text = "Surprise";
+							label = "Surprise";
 							break;
 						case Emotion.TRUST:
-							text = "Trust";
+							label = "Trust";
 							break;
 					}
 					return (
-						<p key={e.id + index}>
-							{text} -> {Math.round(e.value * 100 + Number.EPSILON) / 100}
+						<p key={p[0]}>
+							{label} -> {Math.round(p[1] * 100 + Number.EPSILON) / 100}
 						</p>
 					);
 				})}

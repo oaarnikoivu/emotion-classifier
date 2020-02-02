@@ -1,13 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import "./App.css";
 import { Emotions } from "./components/emotions_component";
-import { EmotionForm } from "./components/emotion_form_component";
 import { Emojis } from "./components/emotions_interfaces";
 import { Container } from "semantic-ui-react";
 
 const App: React.FC = () => {
-	const [emotions, setEmotions] = useState([]);
-
 	return (
 		<>
 			<Container style={{ marginTop: 20 }}>
@@ -30,12 +27,7 @@ const App: React.FC = () => {
 					</div>
 				</div>
 				<div>
-					<EmotionForm
-						onNewText={(predictions: any) => {
-							setEmotions(emotions.concat(predictions));
-						}}
-					/>
-					<Emotions emotions={emotions} showTitle={emotions.length > 0 ? true : false} />
+					<Emotions />
 				</div>
 			</Container>
 		</>
