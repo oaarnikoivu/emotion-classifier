@@ -1,52 +1,57 @@
 import React from "react";
-import { EmotionProps, Emojis } from "./emotions_interfaces";
-import { Emoji } from "./emoji/emoji_component";
+import { EmotionProps, Emotion } from "./emotions_interfaces";
 
 export const Emotions: React.FC<EmotionProps> = (props: EmotionProps) => {
 	return (
 		<>
-			{/* <div>{props.emotion}</div> */}
-			<div>{props.emotion ? determineEmojiToShow() : undefined}</div>
+			<div style={{ marginTop: 12, marginBottom: 12, fontFamily: "Arial" }}>
+				<h5>{props.showTitle ? "Predictions: " : undefined}</h5>
+			</div>
+			<div>
+				{props.emotions.map((e: any, index: number) => {
+					let text: string = "";
+					switch (e.id) {
+						case Emotion.ANGER:
+							text = "Anger";
+							break;
+						case Emotion.ANTICIPATION:
+							text = "Anticipation";
+							break;
+						case Emotion.DISGUST:
+							text = "Disgust";
+							break;
+						case Emotion.FEAR:
+							text = "Fear";
+							break;
+						case Emotion.JOY:
+							text = "Joy";
+							break;
+						case Emotion.LOVE:
+							text = "Love";
+							break;
+						case Emotion.OPTIMISM:
+							text = "Optimism";
+							break;
+						case Emotion.PESSIMISM:
+							text = "Pessimism";
+							break;
+						case Emotion.SADNESS:
+							text = "Sadness";
+							break;
+						case Emotion.SURPRISE:
+							text = "Surprise";
+							break;
+						case Emotion.TRUST:
+							text = "Trust";
+							break;
+					}
+					return (
+						<p key={e.id + index}>
+							{text} -> {Math.round(e.value * 100 + Number.EPSILON) / 100}
+						</p>
+					);
+				})}
+			</div>
 		</>
 	);
-
-	function determineEmojiToShow(): JSX.Element {
-		let output: JSX.Element;
-		switch (props.emotion.toLowerCase()) {
-			case "anger":
-				output = <Emoji symbol={Emojis.ANGER} label='anger' />;
-				break;
-			case "anticipation":
-				output = <Emoji symbol={Emojis.ANTICIPATION} label='anticipation' />;
-				break;
-			case "disgust":
-				output = <Emoji symbol={Emojis.DISGUST} label='disgust' />;
-				break;
-			case "fear":
-				output = <Emoji symbol={Emojis.FEAR} label='fear' />;
-				break;
-			case "joy":
-				output = <Emoji symbol={Emojis.JOY} label='joy' />;
-				break;
-			case "love":
-				output = <Emoji symbol={Emojis.LOVE} label='love' />;
-				break;
-			case "optimism":
-				output = <Emoji symbol={Emojis.OPTIMISM} label='optimism' />;
-				break;
-			case "pessimism":
-				output = <Emoji symbol={Emojis.PESSIMISM} label='pessimism' />;
-				break;
-			case "sadness":
-				output = <Emoji symbol={Emojis.SADNESS} label='sadness' />;
-				break;
-			case "surprise":
-				output = <Emoji symbol={Emojis.SURPRISE} label='surprise' />;
-				break;
-			case "trust":
-				output = <Emoji symbol={Emojis.TRUST} label='trust' />;
-				break;
-		}
-		return output;
-	}
 };

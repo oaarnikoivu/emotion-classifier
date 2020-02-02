@@ -3,6 +3,7 @@ import pickle
 
 import torch
 from flask import Flask, request, jsonify
+from collections import Counter
 
 from models.load_model import load_bert_model
 
@@ -45,9 +46,10 @@ def form_post():
                   'pred_trust': load_bert_model()['trust'].predict_proba(features)[:, 1][0]
                   }
 
-    prediction = max(dict_preds.keys(), key=(lambda k: dict_preds[k]))
+    c = Counter(dict_preds)
+    mc = c.most_common(3)
 
-    return jsonify(prediction)
+    return jsonify(mc)
 
 
 if __name__ == '__main__':

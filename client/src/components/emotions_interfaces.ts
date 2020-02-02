@@ -1,4 +1,4 @@
-export enum Emotions {
+export enum Emotion {
 	ANGER = "pred_anger",
 	ANTICIPATION = "pred_anticipation",
 	DISGUST = "pred_disgust",
@@ -27,6 +27,7 @@ export enum Emojis {
 }
 
 export interface EmotionProps {
-	emotion?: string;
+	emotions?: string[];
 	onNewText?: any;
+	showTitle?: boolean;
 }
