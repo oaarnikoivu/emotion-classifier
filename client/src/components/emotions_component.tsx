@@ -51,7 +51,7 @@ export const Emotions: React.FC<EmotionProps> = () => {
 				</Form.Field>
 			</Form>
 			<div style={{ marginTop: 12, marginBottom: 12, fontFamily: "Arial" }}>
-				<h5>Predictions: </h5>
+				<h5>{predictions.length > 0 ? "Predictions: " : undefined}</h5>
 				{predictions.map((p: any[], index: number) => {
 					let label: string = "";
 					switch (p[0]) {
@@ -90,7 +90,7 @@ export const Emotions: React.FC<EmotionProps> = () => {
 							break;
 					}
 					return (
-						<p key={p[0]}>
+						<p style={{ fontSize: 13 }} key={p[0]}>
 							{label} -> {Math.round(p[1] * 100 + Number.EPSILON) / 100}
 						</p>
 					);
