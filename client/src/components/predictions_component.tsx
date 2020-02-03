@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Emotion } from "./predictions_interfaces";
-import { Form, TextArea, Button } from "semantic-ui-react";
+import { Form, TextArea, Button, List } from "semantic-ui-react";
 
 export const Predictions: React.FC = () => {
 	const [text, setText] = useState("");
@@ -54,7 +54,7 @@ export const Predictions: React.FC = () => {
 			</Form>
 			<div style={{ marginTop: 12, marginBottom: 12, fontFamily: "Arial" }}>
 				<h5>{predText}</h5>
-				{predictions.map((p: any[], index: number) => {
+				{predictions.map((p: any[]) => {
 					let label: string = "";
 					switch (p[0]) {
 						case Emotion.ANGER:
@@ -91,10 +91,19 @@ export const Predictions: React.FC = () => {
 							label = "Trust";
 							break;
 					}
+					let content = label + " --> " + Math.round(p[1] * 100 + Number.EPSILON) / 100;
 					return (
-						<p style={{ fontSize: 13 }} key={p[0]}>
-							{label} -> {Math.round(p[1] * 100 + Number.EPSILON) / 100}
-						</p>
+						<>
+							<List divided verticalAlign='middle'>
+								<List.Item>
+									<List.Content floated='right'>
+										<Button icon={"checkmark"} positive={true} size={"tiny"} />
+										<Button icon={"delete"} negative={true} size={"tiny"} />
+									</List.Content>
+									<List.Content>{content}</List.Content>
+								</List.Item>
+							</List>
+						</>
 					);
 				})}
 			</div>
