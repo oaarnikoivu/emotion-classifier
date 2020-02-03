@@ -4,6 +4,7 @@ import { Form, TextArea, Button } from "semantic-ui-react";
 
 export const Predictions: React.FC = () => {
 	const [text, setText] = useState("");
+	const [predText, setPredText] = useState("");
 	const [isSending, setIsSending] = useState(false);
 	const [predictions, setPredictions] = useState([]);
 
@@ -27,6 +28,7 @@ export const Predictions: React.FC = () => {
 				response.json().then((preds: any[]) => {
 					setPredictions(preds);
 				});
+				setPredText(text);
 			}
 
 			setText("");
@@ -51,7 +53,7 @@ export const Predictions: React.FC = () => {
 				</Form.Field>
 			</Form>
 			<div style={{ marginTop: 12, marginBottom: 12, fontFamily: "Arial" }}>
-				<h5>{predictions.length > 0 ? "Predictions: " : undefined}</h5>
+				<h5>{predText}</h5>
 				{predictions.map((p: any[], index: number) => {
 					let label: string = "";
 					switch (p[0]) {
