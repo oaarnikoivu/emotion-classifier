@@ -25,12 +25,3 @@ export enum Emojis {
 	SURPRISE = "😮",
 	TRUST = "🤞"
 }
-
-export interface EmotionProps {
-	emotions?: string[];
-	handleOnClick?: Promise<void>;
-	onNewText?: any;
-	showTitle?: boolean;
-	text?: string;
-	setText?: any;
-}

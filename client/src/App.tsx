@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
-import { Emotions } from "./components/emotions_component";
-import { Emojis } from "./components/emotions_interfaces";
+import { Predictions } from "./components/predictions_component";
+import { Emojis } from "./components/predictions_interfaces";
 import { Container } from "semantic-ui-react";
 
 const App: React.FC = () => {
@@ -27,7 +27,7 @@ const App: React.FC = () => {
 					</div>
 				</div>
 				<div>
-					<Emotions />
+					<Predictions />
 				</div>
 			</Container>
 		</>

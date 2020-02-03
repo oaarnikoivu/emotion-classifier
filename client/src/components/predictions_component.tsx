@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { EmotionProps, Emotion } from "./emotions_interfaces";
+import React, { useState, useCallback } from "react";
+import { Emotion } from "./predictions_interfaces";
 import { Form, TextArea, Button } from "semantic-ui-react";
 
-export const Emotions: React.FC<EmotionProps> = () => {
+export const Predictions: React.FC = () => {
 	const [text, setText] = useState("");
 	const [isSending, setIsSending] = useState(false);
 	const [predictions, setPredictions] = useState([]);
@@ -32,7 +32,7 @@ export const Emotions: React.FC<EmotionProps> = () => {
 			setText("");
 			setIsSending(false);
 		}
-	}, [isSending, predictions, text]);
+	}, [isSending, text]);
 
 	return (
 		<>
