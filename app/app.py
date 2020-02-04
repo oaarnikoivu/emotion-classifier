@@ -54,7 +54,7 @@ def form_post():
                   }
 
     c = Counter(dict_preds)
-    mc = c.most_common(3)
+    mc = c.most_common(5)
 
     return jsonify(mc)
 
