@@ -21,8 +21,7 @@ const App: React.FC = () => {
 							</strong>
 						</p>
 						<p style={{ fontSize: 13 }}>
-							Teach the AI by labelling incorrect predictions with the emotion label(s) you think
-							best represent the text.
+							Teach the AI by marking the correct and incorrect predictions.
 						</p>
 					</div>
 				</div>

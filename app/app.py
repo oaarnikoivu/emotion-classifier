@@ -23,6 +23,13 @@ with open(basepath + '/models/bert/distilbert_model.pkl', 'rb') as db_model_file
     model = pickle.load(db_model_file)
 
 
+@app.route('/update_preds', methods=['POST'])
+def update_predictions():
+    updated_preds = request.json
+    print(updated_preds)
+    return jsonify('Received!')
+
+
 @app.route('/', methods=['POST'])
 def form_post():
     text = request.json
