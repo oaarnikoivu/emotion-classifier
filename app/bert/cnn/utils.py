@@ -1,0 +1,10 @@
+args = dict(bert_model='bert-base-uncased',
+            data_dir='/Users/olive/github/dissertation/app/bert/cnn/datasets/SemEval/',
+            label_cols=['anger', 'anticipation', 'disgust', 'fear', 'joy',
+                        'love', 'optimism', 'pessimism', 'sadness', 'surprise', 'trust'],
+            batch_size=64,
+            num_filters=100,
+            filter_sizes=[3, 4, 5],
+            output_dim=11,
+            dropout=0.5,
+            epochs=1,)
