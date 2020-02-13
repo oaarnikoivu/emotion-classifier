@@ -4,7 +4,6 @@ from pathlib import Path
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import transformers
 from transformers import BertModel, BertTokenizer
 
 from build_dataset import build_dataset
@@ -79,7 +78,7 @@ model = model.to(device)
 criterion = criterion.to(device)
 
 
-def run_model():
+def run():
     best_valid_loss = float('inf')
 
     train_history = []
@@ -120,4 +119,4 @@ def run_model():
 
 
 if __name__ == "__main__":
-    run_model()
+    run()

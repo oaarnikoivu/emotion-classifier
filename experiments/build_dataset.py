@@ -1,5 +1,4 @@
 import torch
-import torchtext
 from torchtext import data
 
 
