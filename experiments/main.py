@@ -8,7 +8,7 @@ from transformers import BertModel, BertTokenizer
 
 from build_dataset import build_dataset
 from evaluate import evaluate
-from model.cnn import BertCNN
+from model.cnn import BertCNN, BertVDCNN
 from train import train
 from utils import args, epoch_time
 
@@ -70,6 +70,7 @@ model = BertCNN(
     output_dim=args['output_dim'],
     dropout=args['dropout']
 )
+
 
 optimizer = optim.Adam(model.parameters())
 criterion = nn.BCEWithLogitsLoss()
