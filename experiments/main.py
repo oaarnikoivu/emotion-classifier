@@ -8,13 +8,17 @@ from transformers import BertModel, BertTokenizer
 
 from build_dataset import build_dataset
 from evaluate import evaluate
-from model.cnn import BertCNN, BertVDCNN
+from model.text_cnn import BertCNN
+from model.attention_lstm import AttentionLSTM
 from train import train
-from utils import args, epoch_time
+from utils import epoch_time
+from opts import parse_opt
+
+opt = parse_opt()
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-tokenizer = BertTokenizer.from_pretrained(args['bert_model'])
+tokenizer = BertTokenizer.from_pretrained(opt.bert_model)
 
 init_token = tokenizer.cls_token
 eos_token = tokenizer.sep_token
@@ -26,7 +30,7 @@ eos_token_idx = tokenizer.sep_token_id
 pad_token_idx = tokenizer.pad_token_id
 unk_token_idx = tokenizer.unk_token_id
 
-max_input_length = tokenizer.max_model_input_sizes[args['bert_model']]
+max_input_length = tokenizer.max_model_input_sizes[opt.bert_model]
 
 DATA_PATH = Path('/Users/olive/github/dissertation/experiments/data/')
 
@@ -48,7 +52,7 @@ train_iterator, valid_iterator, test_iterator = build_dataset(
     pad_token=pad_token_idx,
     unk_token=unk_token_idx,
     data_path=DATA_PATH,
-    batch_size=args['batch_size'],
+    batch_size=opt.batch_size,
     device=device
 )
 
@@ -61,16 +65,14 @@ for batch in valid_iterator:
     if aux == 20:
         break
 
-bert = BertModel.from_pretrained(args['bert_model'])
+bert = BertModel.from_pretrained(opt.bert_model)
 
-model = BertCNN(
-    bert=bert,
-    n_filters=args['num_filters'],
-    filter_sizes=args['filter_sizes'],
-    output_dim=args['output_dim'],
-    dropout=args['dropout']
-)
+# model = BertCNN(
+#     bert=bert,
+#     opt=opt
+# )
 
+model = AttentionLSTM(bert=bert, opt=opt)
 
 optimizer = optim.Adam(model.parameters())
 criterion = nn.BCEWithLogitsLoss()
@@ -85,7 +87,7 @@ def run():
     train_history = []
     valid_history = []
 
-    for epoch in range(args['epochs']):
+    for epoch in range(opt.epochs):
 
         start_time = time.time()
 
@@ -114,9 +116,11 @@ def run():
         valid_macro = valid_metrics['f1_macro']
 
         print(f'Epoch: {epoch+1:02} | Epoch Time: {epoch_mins}m {epoch_secs}s')
-        print(f'\tTrain Loss: {train_loss:.3f} | Train Acc: {train_acc*100:.2f}% | Train F1 Micro: {train_micro*100:.2f}% | Train F1 Macro: {train_macro*100:.2f}%')
+        print(f'\tTrain Loss: {train_loss:.3f} | Train Acc: {train_acc*100:.2f}% | Train F1 Micro: {train_micro*100:.2f}'
+              f'% | Train F1 Macro: {train_macro*100:.2f}%')
         print(
-            f'\t Val. Loss: {valid_loss:.3f} | Val. Acc: {valid_acc*100:.2f}%  | Val. F1 Micro: {valid_micro*100:.2f}%  | Val. F1 Macro: {valid_macro*100:.2f}%')
+            f'\t Val. Loss: {valid_loss:.3f} | Val. Acc: {valid_acc*100:.2f}%  | Val. F1 Micro: {valid_micro*100:.2f}'
+            f'%  | Val. F1 Macro: {valid_macro*100:.2f}%')
 
 
 if __name__ == "__main__":
