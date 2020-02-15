@@ -17,6 +17,7 @@ export const Predictions: React.FC = () => {
 		setIsSending(true);
 
 		const textToSend: string = text;
+		const textLength = textToSend.length;
 
 		if (textToSend !== "") {
 			const response: Response = await fetch("/", {
@@ -24,7 +25,7 @@ export const Predictions: React.FC = () => {
 				headers: {
 					"Content-Type": "application/json"
 				},
-				body: JSON.stringify(text)
+				body: JSON.stringify([text, textLength])
 			});
 
 			if (response.ok) {
@@ -93,20 +94,28 @@ export const Predictions: React.FC = () => {
 		return <div>Loading...</div>;
 	};
 
-	const renderPredictions = () => {
+	const visualizeAttention = () => {
 		let searchWords: string[] = [];
 		attnWeights.forEach(weight => {
 			searchWords.push(weight[0]);
 		});
+
+		return (
+			<div style={{ marginTop: 24, marginBottom: 12 }}>
+				<Highlighter
+					highlightClassName='highlightClass'
+					searchWords={searchWords}
+					autoEscape={true}
+					textToHighlight={predText}
+				/>
+			</div>
+		);
+	};
+
+	const renderPredictions = () => {
 		return (
 			<>
-				<div style={{ marginTop: 12, marginBottom: 12, fontFamily: "Arial" }}>
-					<Highlighter
-						highlightClassName='highlightClass'
-						searchWords={searchWords}
-						autoEscape={true}
-						textToHighlight={predText}
-					/>
+				<div style={{ marginTop: 24, marginBottom: 12, fontFamily: "Arial" }}>
 					{predictions.map((p: any[]) => {
 						let label: string = "";
 						switch (p[0]) {
@@ -202,6 +211,7 @@ export const Predictions: React.FC = () => {
 					</Button>
 				</Form.Field>
 			</Form>
+			{visualizeAttention()}
 			{isUpdating ? showLoadingIcon() : renderPredictions()}
 		</>
 	);

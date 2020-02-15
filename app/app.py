@@ -1,7 +1,6 @@
 import os
 import numpy as np
 
-import json
 import torch
 from flask import Flask, request, jsonify
 from collections import Counter
@@ -68,7 +67,8 @@ def update_predictions():
 
 @app.route('/', methods=['POST'])
 def form_post():
-    text = request.json
+    text = request.json[0]
+    text_len = request.json[1]
 
     preds, attn_weights, tokens = predict_emotion(text)
 
@@ -97,7 +97,10 @@ def form_post():
         attn_dict[tokens[i]] = float(str(attention_weights[i]))
 
     weight_c = Counter(attn_dict)
-    mc_weights = weight_c.most_common(3)
+    if text_len >= 15:
+        mc_weights = weight_c.most_common(5)
+    else:
+        mc_weights = weight_c.most_common(3)
 
     return jsonify(mc_preds, mc_weights)
 
