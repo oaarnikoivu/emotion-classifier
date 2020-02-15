@@ -1,5 +1,7 @@
 import os
+import boto3
 import numpy as np
+
 
 import torch
 from flask import Flask, request, jsonify
@@ -24,8 +26,10 @@ model = AttentionBiLSTM(
     num_classes=11
 )
 
-model.load_state_dict(torch.load('/Users/olive/github/dissertation/app/models/bert/bert-lstm-model.pt',
-                                 map_location='cpu'))
+s3 = boto3.resource('s3')
+s3.Bucket('attentionlstm').download_file('bert-lstm-model.pt', '/tmp/model.pth')
+
+model.load_state_dict(torch.load('/tmp/model.pth'))
 
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
