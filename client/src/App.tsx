@@ -7,8 +7,8 @@ import { Container } from "semantic-ui-react";
 const App: React.FC = () => {
 	return (
 		<>
-			<Container style={{ marginTop: 20 }}>
-				<div style={{ marginBottom: 20 }}>
+			<Container style={{ marginTop: 24 }}>
+				<div style={{ marginBottom: 24 }}>
 					<h1>This AI has been trained to understand emotion from text.</h1>
 					<div>
 						<h4>Emotions are categorized into 11 distinct labels:</h4>

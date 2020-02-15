@@ -98,9 +98,9 @@ def form_post():
 
     weight_c = Counter(attn_dict)
     if text_len >= 15:
-        mc_weights = weight_c.most_common(5)
+        mc_weights = weight_c.most_common(8)
     else:
-        mc_weights = weight_c.most_common(3)
+        mc_weights = weight_c.most_common(4)
 
     return jsonify(mc_preds, mc_weights)
 

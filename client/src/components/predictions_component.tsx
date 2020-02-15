@@ -94,28 +94,61 @@ export const Predictions: React.FC = () => {
 		return <div>Loading...</div>;
 	};
 
-	const visualizeAttention = () => {
+	const getRandomColor = (searchWords: string[], text: string) => {
+		let colors: string[] = ["#3f9fe8", "#2f8cd4", "#1b7fcc", "#0b6eba", "#0761a6", "#00518f"];
+		if (searchWords.includes(text)) {
+			if (text === searchWords[0]) {
+				return colors.pop();
+			} else if (text === searchWords[1]) {
+				return colors[4];
+			} else if (text === searchWords[2]) {
+				return colors[3];
+			} else if (text === searchWords[3]) {
+				return colors[2];
+			} else if (text === searchWords[4]) {
+				return colors[1];
+			} else {
+				return "#3f9fe8";
+			}
+		}
+	};
+
+	const renderPredictions = () => {
 		let searchWords: string[] = [];
 		attnWeights.forEach(weight => {
 			searchWords.push(weight[0]);
 		});
 
-		return (
-			<div style={{ marginTop: 24, marginBottom: 12 }}>
-				<Highlighter
-					highlightClassName='highlightClass'
-					searchWords={searchWords}
-					autoEscape={true}
-					textToHighlight={predText}
-				/>
-			</div>
-		);
-	};
+		let text: any;
 
-	const renderPredictions = () => {
+		if (predText) {
+			text = predText.split(" ").map(function(a, i) {
+				return (
+					<>
+						<div style={{ display: "flex", marginBottom: 12 }}>
+							<span
+								style={{
+									marginRight: 9,
+									backgroundColor: searchWords.includes(a)
+										? getRandomColor(searchWords, a)
+										: "#93c6ed",
+									color: "white",
+									borderRadius: 4,
+									padding: 6
+								}}
+								key={i}>
+								{a}
+							</span>
+						</div>
+					</>
+				);
+			});
+		}
+
 		return (
 			<>
-				<div style={{ marginTop: 24, marginBottom: 12, fontFamily: "Arial" }}>
+				<div style={{ marginTop: 36, marginBottom: 12, fontFamily: "Arial" }}>
+					<div style={{ display: "flex", flexWrap: "wrap" }}>{text}</div>
 					{predictions.map((p: any[]) => {
 						let label: string = "";
 						switch (p[0]) {
@@ -211,7 +244,6 @@ export const Predictions: React.FC = () => {
 					</Button>
 				</Form.Field>
 			</Form>
-			{visualizeAttention()}
 			{isUpdating ? showLoadingIcon() : renderPredictions()}
 		</>
 	);
