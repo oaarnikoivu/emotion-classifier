@@ -1,26 +1,62 @@
 import os
-import pickle
+import numpy as np
 
+import json
 import torch
 from flask import Flask, request, jsonify
 from collections import Counter
-
-from models.load_model import load_bert_model
+from transformers import BertModel, BertTokenizer
+from models.attention.attention_lstm import AttentionBiLSTM
 
 app = Flask(__name__)
 basepath = os.path.abspath("./")
 
-# load vectorizer
-with open(basepath + '/models/tfidf/vectorizer.pkl', 'rb') as vect_file:
-    vectorizer = pickle.load(vect_file)
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# load distilbert tokenizer
-with open(basepath + '/models/bert/distilbert_tokenizer.pkl', 'rb') as tz_file:
-    tokenizer = pickle.load(tz_file)
+bert = BertModel.from_pretrained('bert-base-uncased')
 
-# load distilbert model
-with open(basepath + '/models/bert/distilbert_model.pkl', 'rb') as db_model_file:
-    model = pickle.load(db_model_file)
+model = AttentionBiLSTM(
+    bert=bert,
+    hidden_size=768,
+    num_layers=2,
+    dropout=0.5,
+    fc_dropout=0.5,
+    embed_dropout=0.2,
+    num_classes=11
+)
+
+model.load_state_dict(torch.load('/Users/olive/github/dissertation/app/models/bert/bert-lstm-model.pt',
+                                 map_location='cpu'))
+
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+init_token = tokenizer.cls_token
+eos_token = tokenizer.sep_token
+pad_token = tokenizer.pad_token
+unk_token = tokenizer.unk_token
+
+init_token_idx = tokenizer.cls_token_id
+eos_token_idx = tokenizer.sep_token_id
+pad_token_idx = tokenizer.pad_token_id
+unk_token_idx = tokenizer.unk_token_id
+
+max_input_length = tokenizer.max_model_input_sizes['bert-base-uncased']
+
+LABEL_COLS = ['pred_anger', 'pred_anticipation', 'pred_disgust', 'pred_fear', 'pred_joy',
+              'pred_love', 'pred_optimism', 'pred_pessimism', 'pred_sadness', 'pred_surprise', 'pred_trust']
+
+
+def predict_emotion(tweet):
+    preds = []
+    model.eval()
+    tokens = tokenizer.tokenize(tweet)
+    tokens = tokens[:max_input_length-2]
+    indexed = [init_token_idx] + tokenizer.convert_tokens_to_ids(tokens) + [eos_token_idx]
+    tensor = torch.LongTensor(indexed).to(device)
+    tensor = tensor.unsqueeze(0)
+    predictions, attn_weights = model(tensor)
+    preds.append(torch.sigmoid(predictions).detach().cpu().numpy())
+    return preds, attn_weights, tokens
 
 
 @app.route('/update_preds', methods=['POST'])
@@ -34,29 +70,36 @@ def update_predictions():
 def form_post():
     text = request.json
 
-    input_ids = torch.tensor(tokenizer.encode(text)).unsqueeze(0)
+    preds, attn_weights, tokens = predict_emotion(text)
 
-    with torch.no_grad():
-        last_hidden_states = model(input_ids)
-        features = last_hidden_states[0][0:, 0, :].numpy()
+    pred_values = []
+    for p in preds[0]:
+        for v in p:
+            pred_values.append(v)
 
-    dict_preds = {'pred_anger': load_bert_model()['anger'].predict_proba(features)[:, 1][0],
-                  'pred_anticipation': load_bert_model()['anticipation'].predict_proba(features)[:, 1][0],
-                  'pred_disgust': load_bert_model()['disgust'].predict_proba(features)[:, 1][0],
-                  'pred_fear': load_bert_model()['fear'].predict_proba(features)[:, 1][0],
-                  'pred_joy': load_bert_model()['joy'].predict_proba(features)[:, 1][0],
-                  'pred_love': load_bert_model()['love'].predict_proba(features)[:, 1][0],
-                  'pred_optimism': load_bert_model()['optimism'].predict_proba(features)[:, 1][0],
-                  'pred_pessimism': load_bert_model()['pessimism'].predict_proba(features)[:, 1][0],
-                  'pred_sadness': load_bert_model()['sadness'].predict_proba(features)[:, 1][0],
-                  'pred_surprise': load_bert_model()['surprise'].predict_proba(features)[:, 1][0],
-                  'pred_trust': load_bert_model()['trust'].predict_proba(features)[:, 1][0]
-                  }
+    dict_preds = {}
 
-    c = Counter(dict_preds)
-    mc = c.most_common(5)
+    for i, label in enumerate(LABEL_COLS):
+        dict_preds[LABEL_COLS[i]] = float(str(pred_values[i]))
 
-    return jsonify(mc)
+    pred_c = Counter(dict_preds)
+    mc_preds = pred_c.most_common(3)
+
+    attention_weights = []
+    for aw in attn_weights[0]:
+        for v in aw:
+            attention_weights.append(v.detach().cpu().numpy())
+
+    attention_weights = np.array(attention_weights[1:-1])
+
+    attn_dict = {}
+    for i in range(len(attention_weights)):
+        attn_dict[tokens[i]] = float(str(attention_weights[i]))
+
+    weight_c = Counter(attn_dict)
+    mc_weights = weight_c.most_common(3)
+
+    return jsonify(mc_preds, mc_weights)
 
 
 if __name__ == '__main__':

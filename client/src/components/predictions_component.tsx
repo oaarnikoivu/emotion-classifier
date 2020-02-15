@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Emotion } from "./predictions_interfaces";
 import { Form, TextArea, Button, List, Icon } from "semantic-ui-react";
+import Highlighter from "react-highlight-words";
 
 export const Predictions: React.FC = () => {
 	const [text, setText] = useState("");
@@ -8,6 +9,7 @@ export const Predictions: React.FC = () => {
 	const [isSending, setIsSending] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [predictions, setPredictions] = useState([]);
+	const [attnWeights, setAttnWeights] = useState([]);
 
 	const getPredictions = useCallback(async () => {
 		if (isSending) return;
@@ -26,8 +28,9 @@ export const Predictions: React.FC = () => {
 			});
 
 			if (response.ok) {
-				response.json().then((preds: any[]) => {
-					setPredictions(preds);
+				response.json().then((r: any[]) => {
+					setPredictions(r[0]);
+					setAttnWeights(r[1]);
 				});
 				setPredText(text);
 			}
@@ -91,10 +94,19 @@ export const Predictions: React.FC = () => {
 	};
 
 	const renderPredictions = () => {
+		let searchWords: string[] = [];
+		attnWeights.forEach(weight => {
+			searchWords.push(weight[0]);
+		});
 		return (
 			<>
 				<div style={{ marginTop: 12, marginBottom: 12, fontFamily: "Arial" }}>
-					<h5>{predText}</h5>
+					<Highlighter
+						highlightClassName='highlightClass'
+						searchWords={searchWords}
+						autoEscape={true}
+						textToHighlight={predText}
+					/>
 					{predictions.map((p: any[]) => {
 						let label: string = "";
 						switch (p[0]) {

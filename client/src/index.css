@@ -14,6 +14,10 @@ span {
 	font-family: "Courier New", Courier, monospace !important;
 }
 
+span {
+	font-weight: bold;
+}
+
 .content {
 	font-family: "Courier New", Courier, monospace !important;
 	font-size: 13px;
