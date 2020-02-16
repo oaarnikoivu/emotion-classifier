@@ -44,7 +44,6 @@ model = AttentionBiLSTM(
 model.load_state_dict(torch.load('/home/blove/server/models/attention/attention_lstm.pt',
                                  map_location='cpu'))
 
-
 def predict_emotion(tweet, model, tokenizer, max_input_length, init_token_idx, eos_token_idx):
     preds = []
     model.eval()
