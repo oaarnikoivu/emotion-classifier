@@ -77,7 +77,7 @@ def form_post():
 
     tokenizer, init_token_idx, eos_token_idx, max_input_length, model = configure_model()
 
-    model.load_state_dict(torch.load('/Users/olive/github/dissertation/app/models/attention/bert-lstm-model.pt',
+    model.load_state_dict(torch.load('models/attention/bert-lstm-model.pt',
                                      map_location='cpu'))
 
     text = request.json[0]
