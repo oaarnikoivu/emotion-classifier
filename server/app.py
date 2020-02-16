@@ -2,13 +2,13 @@ import os
 import pickle
 from collections import Counter
 
-import transformers
 import numpy as np
 import torch
+import transformers
 from flask import Flask, jsonify, request
-from flask_cors import CORS
-
 from transformers import BertModel, BertTokenizer
+
+from flask_cors import CORS
 from models.attention.attention_lstm import AttentionBiLSTM
 
 app = Flask(__name__)
