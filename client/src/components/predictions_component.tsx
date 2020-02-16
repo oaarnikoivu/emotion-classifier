@@ -20,7 +20,7 @@ export const Predictions: React.FC = () => {
 		const textLength = textToSend.length;
 
 		if (textToSend !== "") {
-			const response: Response = await fetch("/", {
+			const response: Response = await fetch("/predictions", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
