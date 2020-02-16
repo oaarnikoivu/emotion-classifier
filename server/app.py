@@ -2,11 +2,13 @@ import os
 import pickle
 from collections import Counter
 
+import transformers
 import numpy as np
 import torch
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+from transformers import BertModel, BertTokenizer
 from models.attention.attention_lstm import AttentionBiLSTM
 
 app = Flask(__name__)
@@ -20,11 +22,8 @@ LABEL_COLS = ['pred_anger', 'pred_anticipation', 'pred_disgust', 'pred_fear', 'p
               'pred_love', 'pred_optimism', 'pred_pessimism', 'pred_sadness', 'pred_surprise', 'pred_trust']
 
 
-with open('/home/blove/server/bert/bert_pretrained.pkl', 'rb') as file:
-    bert = pickle.load(file)
-
-with open('/home/blove/server/bert/bert_tokenizer.pkl', 'rb') as file:
-    tokenizer = pickle.load(file)
+bert = BertModel.from_pretrained('bert-base-uncased')
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
 init_token_idx = tokenizer.cls_token_id
 eos_token_idx = tokenizer.sep_token_id
@@ -43,6 +42,7 @@ model = AttentionBiLSTM(
 
 model.load_state_dict(torch.load('/home/blove/server/models/attention/attention_lstm.pt',
                                  map_location='cpu'))
+
 
 def predict_emotion(tweet, model, tokenizer, max_input_length, init_token_idx, eos_token_idx):
     preds = []
