@@ -12,46 +12,47 @@ basepath = os.path.abspath("./")
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-bert = BertModel.from_pretrained('bert-base-uncased')
-
-model = AttentionBiLSTM(
-    bert=bert,
-    hidden_size=768,
-    num_layers=2,
-    dropout=0.5,
-    fc_dropout=0.5,
-    embed_dropout=0.2,
-    num_classes=11
-)
-
-
-model.load_state_dict(torch.load('/Users/olive/github/dissertation/app/models/attention/bert-lstm-model.pt',
-                                 map_location='cpu'))
-
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-
-init_token = tokenizer.cls_token
-eos_token = tokenizer.sep_token
-pad_token = tokenizer.pad_token
-unk_token = tokenizer.unk_token
-
-init_token_idx = tokenizer.cls_token_id
-eos_token_idx = tokenizer.sep_token_id
-pad_token_idx = tokenizer.pad_token_id
-unk_token_idx = tokenizer.unk_token_id
-
-max_input_length = tokenizer.max_model_input_sizes['bert-base-uncased']
-
 LABEL_COLS = ['pred_anger', 'pred_anticipation', 'pred_disgust', 'pred_fear', 'pred_joy',
               'pred_love', 'pred_optimism', 'pred_pessimism', 'pred_sadness', 'pred_surprise', 'pred_trust']
 
 
-def predict_emotion(tweet):
+def configure_model():
+    bert = BertModel.from_pretrained('bert-base-uncased')
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+    init_token = tokenizer.cls_token
+
+    eos_token = tokenizer.sep_token
+    pad_token = tokenizer.pad_token
+    unk_token = tokenizer.unk_token
+
+    init_token_idx = tokenizer.cls_token_id
+    eos_token_idx = tokenizer.sep_token_id
+    pad_token_idx = tokenizer.pad_token_id
+    unk_token_idx = tokenizer.unk_token_id
+
+    max_input_length = tokenizer.max_model_input_sizes['bert-base-uncased']
+
+    model = AttentionBiLSTM(
+        bert=bert,
+        hidden_size=768,
+        num_layers=2,
+        dropout=0.5,
+        fc_dropout=0.5,
+        embed_dropout=0.2,
+        num_classes=11
+    )
+
+    return tokenizer, init_token_idx, eos_token_idx, max_input_length, model
+
+
+def predict_emotion(tweet, model, tokenizer, max_input_length, init_token_idx, eos_token_idx):
     preds = []
     model.eval()
     tokens = tokenizer.tokenize(tweet)
     tokens = tokens[:max_input_length-2]
-    indexed = [init_token_idx] + tokenizer.convert_tokens_to_ids(tokens) + [eos_token_idx]
+    indexed = [init_token_idx] + \
+        tokenizer.convert_tokens_to_ids(tokens) + [eos_token_idx]
     tensor = torch.LongTensor(indexed).to(device)
     tensor = tensor.unsqueeze(0)
     predictions, attn_weights = model(tensor)
@@ -73,10 +74,17 @@ def server_home_page():
 
 @app.route('/predictions', methods=['POST'])
 def form_post():
+
+    tokenizer, init_token_idx, eos_token_idx, max_input_length, model = configure_model()
+
+    model.load_state_dict(torch.load('/Users/olive/github/dissertation/app/models/attention/bert-lstm-model.pt',
+                                     map_location='cpu'))
+
     text = request.json[0]
     text_len = request.json[1]
 
-    preds, attn_weights, tokens = predict_emotion(text)
+    preds, attn_weights, tokens = predict_emotion(
+        text, model, tokenizer, max_input_length, init_token_idx, eos_token_idx)
 
     pred_values = []
     for p in preds[0]:
