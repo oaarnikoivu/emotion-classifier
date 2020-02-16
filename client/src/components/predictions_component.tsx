@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from "react";
 import { Emotion } from "./predictions_interfaces";
 import { Form, TextArea, Button, List, Icon } from "semantic-ui-react";
+import { Colors } from "../utils/colors";
 
 const URL: string = "http://34.244.123.199/";
 
@@ -95,21 +96,20 @@ export const Predictions: React.FC = () => {
 		return <div>Loading...</div>;
 	};
 
-	const getRandomColor = (searchWords: string[], text: string) => {
-		let colors: string[] = ["#3f9fe8", "#2f8cd4", "#1b7fcc", "#0b6eba", "#0761a6", "#00518f"];
+	const applyColorsToWeights = (searchWords: string[], text: string) => {
 		if (searchWords.includes(text)) {
 			if (text === searchWords[0]) {
-				return colors.pop();
+				return Colors.DARKEST;
 			} else if (text === searchWords[1]) {
-				return colors[4];
+				return Colors.DARK;
 			} else if (text === searchWords[2]) {
-				return colors[3];
+				return Colors.INBETWEEN;
 			} else if (text === searchWords[3]) {
-				return colors[2];
+				return Colors.LIGHTER;
 			} else if (text === searchWords[4]) {
-				return colors[1];
+				return Colors.LIGHT;
 			} else {
-				return "#3f9fe8";
+				return Colors.LIGHTEST;
 			}
 		}
 	};
@@ -131,8 +131,8 @@ export const Predictions: React.FC = () => {
 								style={{
 									marginRight: 9,
 									backgroundColor: searchWords.includes(a)
-										? getRandomColor(searchWords, a)
-										: "#93c6ed",
+										? applyColorsToWeights(searchWords, a)
+										: Colors.DEFAULT,
 									color: "white",
 									borderRadius: 4,
 									padding: 6
