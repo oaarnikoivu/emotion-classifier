@@ -5,10 +5,13 @@ from collections import Counter
 import numpy as np
 import torch
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 from models.attention.attention_lstm import AttentionBiLSTM
 
 app = Flask(__name__)
+CORS(app)
+
 basepath = os.path.abspath("./")
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -17,10 +20,10 @@ LABEL_COLS = ['pred_anger', 'pred_anticipation', 'pred_disgust', 'pred_fear', 'p
               'pred_love', 'pred_optimism', 'pred_pessimism', 'pred_sadness', 'pred_surprise', 'pred_trust']
 
 
-with open('/Users/olive/github/dissertation/server/bert/bert_pretrained.pkl', 'rb') as file:
+with open('/home/blove/server/bert/bert_pretrained.pkl', 'rb') as file:
     bert = pickle.load(file)
 
-with open('/Users/olive/github/dissertation/server/bert/bert_tokenizer.pkl', 'rb') as file:
+with open('/home/blove/server/bert/bert_tokenizer.pkl', 'rb') as file:
     tokenizer = pickle.load(file)
 
 init_token_idx = tokenizer.cls_token_id
@@ -38,7 +41,7 @@ model = AttentionBiLSTM(
     num_classes=11
 )
 
-model.load_state_dict(torch.load('/Users/olive/github/dissertation/server/models/attention/attention_lstm.pt',
+model.load_state_dict(torch.load('/home/blove/server/models/attention/attention_lstm.pt',
                                  map_location='cpu'))
 
 
