@@ -1,7 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { Emotion } from "./predictions_interfaces";
 import { Form, TextArea, Button, List, Icon } from "semantic-ui-react";
-import Highlighter from "react-highlight-words";
+
+const URL: string = "http://34.244.123.199/";
 
 export const Predictions: React.FC = () => {
 	const [text, setText] = useState("");
@@ -20,7 +21,7 @@ export const Predictions: React.FC = () => {
 		const textLength = textToSend.length;
 
 		if (textToSend !== "") {
-			const response: Response = await fetch("/predictions", {
+			const response: Response = await fetch(URL + "/predictions", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
@@ -53,7 +54,7 @@ export const Predictions: React.FC = () => {
 				correct: correct
 			};
 
-			const response: Response = await fetch("/update_preds", {
+			const response: Response = await fetch(URL + "/update_preds", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
