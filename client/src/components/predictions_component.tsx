@@ -20,7 +20,7 @@ export const Predictions: React.FC = () => {
 		const textLength = textToSend.length;
 
 		if (textToSend !== "") {
-			const response: Response = await fetch("https://emotiondetector.herokuapp.com/predictions", {
+			const response: Response = await fetch("/predictions", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
@@ -53,7 +53,7 @@ export const Predictions: React.FC = () => {
 				correct: correct
 			};
 
-			const response: Response = await fetch("https://emotiondetector.herokuapp.com/update_preds", {
+			const response: Response = await fetch("/update_preds", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
