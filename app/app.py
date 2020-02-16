@@ -1,9 +1,7 @@
 import os
-import boto3
 import numpy as np
-
-
 import torch
+
 from flask import Flask, request, jsonify
 from collections import Counter
 from transformers import BertModel, BertTokenizer
@@ -26,10 +24,9 @@ model = AttentionBiLSTM(
     num_classes=11
 )
 
-s3 = boto3.resource('s3')
-s3.Bucket('attentionlstm').download_file('bert-lstm-model.pt', '/tmp/model.pth')
 
-model.load_state_dict(torch.load('/tmp/model.pth'))
+model.load_state_dict(torch.load('/Users/olive/github/dissertation/app/models/attention/bert-lstm-model.pt',
+                                 map_location='cpu'))
 
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 
