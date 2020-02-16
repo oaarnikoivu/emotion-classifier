@@ -1,10 +1,11 @@
 import os
+import pickle
+from collections import Counter
+
 import numpy as np
 import torch
+from flask import Flask, jsonify, request
 
-from flask import Flask, request, jsonify
-from collections import Counter
-from transformers import BertModel, BertTokenizer
 from models.attention.attention_lstm import AttentionBiLSTM
 
 app = Flask(__name__)
@@ -16,34 +17,29 @@ LABEL_COLS = ['pred_anger', 'pred_anticipation', 'pred_disgust', 'pred_fear', 'p
               'pred_love', 'pred_optimism', 'pred_pessimism', 'pred_sadness', 'pred_surprise', 'pred_trust']
 
 
-def configure_model():
-    bert = BertModel.from_pretrained('bert-base-uncased')
-    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+with open('/Users/olive/github/dissertation/server/bert/bert_pretrained.pkl', 'rb') as file:
+    bert = pickle.load(file)
 
-    init_token = tokenizer.cls_token
+with open('/Users/olive/github/dissertation/server/bert/bert_tokenizer.pkl', 'rb') as file:
+    tokenizer = pickle.load(file)
 
-    eos_token = tokenizer.sep_token
-    pad_token = tokenizer.pad_token
-    unk_token = tokenizer.unk_token
+init_token_idx = tokenizer.cls_token_id
+eos_token_idx = tokenizer.sep_token_id
 
-    init_token_idx = tokenizer.cls_token_id
-    eos_token_idx = tokenizer.sep_token_id
-    pad_token_idx = tokenizer.pad_token_id
-    unk_token_idx = tokenizer.unk_token_id
+max_input_length = tokenizer.max_model_input_sizes['bert-base-uncased']
 
-    max_input_length = tokenizer.max_model_input_sizes['bert-base-uncased']
+model = AttentionBiLSTM(
+    bert=bert,
+    hidden_size=768,
+    num_layers=2,
+    dropout=0.5,
+    fc_dropout=0.5,
+    embed_dropout=0.2,
+    num_classes=11
+)
 
-    model = AttentionBiLSTM(
-        bert=bert,
-        hidden_size=768,
-        num_layers=2,
-        dropout=0.5,
-        fc_dropout=0.5,
-        embed_dropout=0.2,
-        num_classes=11
-    )
-
-    return tokenizer, init_token_idx, eos_token_idx, max_input_length, model
+model.load_state_dict(torch.load('/Users/olive/github/dissertation/server/models/attention/attention_lstm.pt',
+                                 map_location='cpu'))
 
 
 def predict_emotion(tweet, model, tokenizer, max_input_length, init_token_idx, eos_token_idx):
@@ -74,11 +70,6 @@ def server_home_page():
 
 @app.route('/predictions', methods=['POST'])
 def form_post():
-
-    tokenizer, init_token_idx, eos_token_idx, max_input_length, model = configure_model()
-
-    model.load_state_dict(torch.load('models/attention/bert-lstm-model.pt',
-                                     map_location='cpu'))
 
     text = request.json[0]
     text_len = request.json[1]
