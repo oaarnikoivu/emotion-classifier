@@ -1,2 +1,3 @@
 env/
-server_env/
+vscode/
+__pycache__/
