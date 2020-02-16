@@ -66,7 +66,12 @@ def update_predictions():
     return jsonify('Received!')
 
 
-@app.route('/', methods=['POST'])
+@app.route('/')
+def server_home_page():
+    return 'Hello, world!'
+
+
+@app.route('/predictions', methods=['POST'])
 def form_post():
     text = request.json[0]
     text_len = request.json[1]
