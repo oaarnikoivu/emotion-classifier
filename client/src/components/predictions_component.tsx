@@ -3,8 +3,6 @@ import { Emotion } from "./predictions_interfaces";
 import { Form, TextArea, Button, List, Icon } from "semantic-ui-react";
 import { Colors } from "../utils/colors";
 
-const URL: string = "server.ainoa.wtf";
-
 export const Predictions: React.FC = () => {
 	const [text, setText] = useState("");
 	const [predText, setPredText] = useState("");
@@ -22,7 +20,7 @@ export const Predictions: React.FC = () => {
 		const textLength = textToSend.length;
 
 		if (textToSend !== "") {
-			const response: Response = await fetch(URL + "/predictions", {
+			const response: Response = await fetch("/predictions", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
@@ -55,7 +53,7 @@ export const Predictions: React.FC = () => {
 				correct: correct
 			};
 
-			const response: Response = await fetch(URL + "/update_preds", {
+			const response: Response = await fetch("/update_preds", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
