@@ -3,7 +3,7 @@ import { Emotion } from "./predictions_interfaces";
 import { Form, TextArea, Button, List, Icon } from "semantic-ui-react";
 import { Colors } from "../utils/colors";
 
-const URL: string = "http://34.255.117.138";
+const URL: string = "server.ainoa.wtf";
 
 export const Predictions: React.FC = () => {
 	const [text, setText] = useState("");

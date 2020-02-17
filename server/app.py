@@ -16,6 +16,8 @@ CORS(app)
 
 basepath = os.path.abspath("./")
 
+MODEL_PATH = "/Users/olive/github/dissertation/server/models/attention/attention_lstm.pt"
+
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 LABEL_COLS = ['pred_anger', 'pred_anticipation', 'pred_disgust', 'pred_fear', 'pred_joy',
@@ -40,7 +42,7 @@ model = AttentionBiLSTM(
     num_classes=11
 )
 
-model.load_state_dict(torch.load('/home/blove/server/models/attention/attention_lstm.pt',
+model.load_state_dict(torch.load(MODEL_PATH,
                                  map_location='cpu'))
 
 
