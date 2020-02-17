@@ -94,22 +94,32 @@ export const Predictions: React.FC = () => {
 		return <div>Loading...</div>;
 	};
 
-	const applyColorsToWeights = (searchWords: string[], text: string) => {
+	const applyColorsToWeights = (searchWords: string[], text: string): any => {
+		let fontSize: number;
+		let color: string;
 		if (searchWords.includes(text)) {
+			console.log(text);
 			if (text === searchWords[0]) {
-				return Colors.DARKEST;
+				color = Colors.DARKEST;
+				fontSize = 20;
 			} else if (text === searchWords[1]) {
-				return Colors.DARK;
+				color = Colors.DARK;
+				fontSize = 18;
 			} else if (text === searchWords[2]) {
-				return Colors.INBETWEEN;
+				color = Colors.INBETWEEN;
+				fontSize = 16;
 			} else if (text === searchWords[3]) {
-				return Colors.LIGHTER;
+				color = Colors.LIGHTER;
+				fontSize = 14;
 			} else if (text === searchWords[4]) {
-				return Colors.LIGHT;
+				color = Colors.LIGHT;
+				fontSize = 13;
 			} else {
-				return Colors.LIGHTEST;
+				color = Colors.LIGHTEST;
+				fontSize = 13;
 			}
 		}
+		return [fontSize, color];
 	};
 
 	const renderPredictions = () => {
@@ -122,18 +132,20 @@ export const Predictions: React.FC = () => {
 
 		if (predText) {
 			text = predText.split(" ").map(function(a, i) {
+				let [first, second] = applyColorsToWeights(searchWords, a);
+				let fontSize = first;
+				let color = second;
+
 				return (
 					<>
 						<div style={{ display: "flex", marginBottom: 12 }}>
 							<span
 								style={{
 									marginRight: 9,
-									backgroundColor: searchWords.includes(a)
-										? applyColorsToWeights(searchWords, a)
-										: Colors.DEFAULT,
-									color: "white",
-									borderRadius: 4,
-									padding: 6
+									color: color,
+									fontSize: fontSize,
+									borderRadius: 2,
+									padding: 4
 								}}
 								key={i}>
 								{a}
