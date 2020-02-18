@@ -16,7 +16,9 @@ CORS(app)
 
 basepath = os.path.abspath("./")
 
-MODEL_PATH = "/Users/olive/github/dissertation/server/models/attention/attention_lstm.pt"
+LOCAL_MODEL_PATH = '/Users/olive/github/dissertation/server/models/attention/attention_lstm.pt'
+
+SERVER_MODEL_PATH = '/home/oliver/server/models/attention/attention_lstm.pt'
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -42,7 +44,7 @@ model = AttentionBiLSTM(
     num_classes=11
 )
 
-model.load_state_dict(torch.load(MODEL_PATH,
+model.load_state_dict(torch.load(LOCAL_MODEL_PATH,
                                  map_location='cpu'))
 
 
@@ -115,4 +117,7 @@ def form_post():
 
 
 if __name__ == '__main__':
+    # Local
     app.run(port=5000, debug=True)
+    # Server
+    # app.run(host='0.0.0.0', debug=True)
