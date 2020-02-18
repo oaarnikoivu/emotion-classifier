@@ -3,6 +3,9 @@ import { Emotion } from "./predictions_interfaces";
 import { Form, TextArea, Button, List, Icon } from "semantic-ui-react";
 import { Colors } from "../utils/colors";
 
+const API_PREDICTION_ENDPOINT: string = "https://server.ainoa.wtf/predictions";
+const API_UPDATE_PREDICTION_ENDPOINT: string = "https://server.ainoa.wtf/update_preds";
+
 export const Predictions: React.FC = () => {
 	const [text, setText] = useState("");
 	const [predText, setPredText] = useState("");
@@ -20,7 +23,7 @@ export const Predictions: React.FC = () => {
 		const textLength = textToSend.length;
 
 		if (textToSend !== "") {
-			const response: Response = await fetch("https://server.ainoa.wtf/predictions", {
+			const response: Response = await fetch(API_PREDICTION_ENDPOINT, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
@@ -53,7 +56,7 @@ export const Predictions: React.FC = () => {
 				correct: correct
 			};
 
-			const response: Response = await fetch("https://server.ainoa.wtf/update_preds", {
+			const response: Response = await fetch(API_UPDATE_PREDICTION_ENDPOINT, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json"
