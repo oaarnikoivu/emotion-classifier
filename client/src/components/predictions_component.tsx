@@ -33,7 +33,7 @@ export const Predictions: React.FC = () => {
 					setPredictions(r[0]);
 					setAttnWeights(r[1]);
 				});
-				setPredText(text);
+				setPredText(text.replace(/[^A-Za-z0-9\s]/g, "").replace(/\s{2,}/g, " "));
 			}
 
 			setText("");
@@ -98,7 +98,6 @@ export const Predictions: React.FC = () => {
 		let fontSize: number;
 		let color: string;
 		if (searchWords.includes(text)) {
-			console.log(text);
 			if (text === searchWords[0]) {
 				color = Colors.DARKEST;
 				fontSize = 20;
