@@ -1,24 +1,18 @@
-import os
-import pickle
-from collections import Counter
-
 import numpy as np
 import torch
 import transformers
-from flask import Flask, jsonify, request
-from transformers import BertModel, BertTokenizer
 
+from flask import Flask, jsonify, request
+from transformers import DistilBertModel, DistilBertTokenizer
 from flask_cors import CORS
+from collections import Counter
 from models.attention.attention_lstm import AttentionBiLSTM
+from args import args
 
 app = Flask(__name__)
 CORS(app)
 
-basepath = os.path.abspath("./")
-
-LOCAL_MODEL_PATH = '/Users/olive/github/dissertation/server/models/attention/attention_lstm.pt'
-
-SERVER_MODEL_PATH = '/home/oliver/server/models/attention/attention_lstm.pt'
+LOCAL_MODEL_PATH = '/Users/olive/github/dissertation/server/models/attention/distilbert-lstm-model.pt'
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -26,23 +20,22 @@ LABEL_COLS = ['pred_anger', 'pred_anticipation', 'pred_disgust', 'pred_fear', 'p
               'pred_love', 'pred_optimism', 'pred_pessimism', 'pred_sadness', 'pred_surprise', 'pred_trust']
 
 
-bert = BertModel.from_pretrained('bert-base-uncased')
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+tokenizer = DistilBertTokenizer.from_pretrained(args['distilbert_tokenizer'])
 
 init_token_idx = tokenizer.cls_token_id
 eos_token_idx = tokenizer.sep_token_id
 
-max_input_length = tokenizer.max_model_input_sizes['bert-base-uncased']
+max_input_length = tokenizer.max_model_input_sizes[args['distilbert_tokenizer']]
 
 model = AttentionBiLSTM(
-    bert=bert,
-    hidden_size=768,
-    num_layers=2,
-    dropout=0.5,
-    fc_dropout=0.5,
-    embed_dropout=0.2,
-    num_classes=11
+    hidden_size=args['hidden_size'],
+    num_layers=args['num_layers'],
+    dropout=args['dropout'],
+    fc_dropout=args['fc_dropout'],
+    emb_layer_dropout=args['embed_dropout'],
+    num_classes=args['output_dim'],
 )
+
 
 model.load_state_dict(torch.load(LOCAL_MODEL_PATH,
                                  map_location='cpu'))

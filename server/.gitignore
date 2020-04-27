@@ -1,2 +1,3 @@
 env/
 server_env/
+models/attention/*

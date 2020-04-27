@@ -1,0 +1,21 @@
+args = {
+    "bert_tokenizer": "bert-base-uncased",
+    "bert_pretrained_model": "bert-base-uncased",
+    "distilbert_tokenizer": "distilbert-base-uncased",
+    "distilbert_pretrained_model": "distilbert-base-uncased",
+    "seed": 1234,
+    "bert_embedding_dim": 768,
+    "use_glove": False,
+    "glove_embedding_dim": 300,
+    "max_vocab_size": 20000,
+    "batch_size": 64,
+    "output_dim": 11,
+    "hidden_size": 256,
+    "num_layers": 2,
+    "dropout": 0.3,
+    "fc_dropout": 0.5,
+    "embed_dropout": 0.3,
+    "weight_decay": 1e-5,
+    "lr": 0.001,
+    "epochs": 10
+}

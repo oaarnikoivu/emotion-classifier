@@ -3,8 +3,8 @@ import { Emotion } from "./predictions_interfaces";
 import { Form, TextArea, Button, List, Icon } from "semantic-ui-react";
 import { Colors } from "../utils/colors";
 
-const API_PREDICTION_ENDPOINT: string = "https://server.ainoa.wtf/predictions";
-const API_UPDATE_PREDICTION_ENDPOINT: string = "https://server.ainoa.wtf/update_preds";
+const API_PREDICTION_ENDPOINT: string = "http://localhost:5000/predictions";
+const API_UPDATE_PREDICTION_ENDPOINT: string = "http://localhost:5000/update_preds";
 
 export const Predictions: React.FC = () => {
 	const [text, setText] = useState("");
@@ -26,9 +26,9 @@ export const Predictions: React.FC = () => {
 			const response: Response = await fetch(API_PREDICTION_ENDPOINT, {
 				method: "POST",
 				headers: {
-					"Content-Type": "application/json"
+					"Content-Type": "application/json",
 				},
-				body: JSON.stringify([text, textLength])
+				body: JSON.stringify([text, textLength]),
 			});
 
 			if (response.ok) {
@@ -53,19 +53,19 @@ export const Predictions: React.FC = () => {
 			let updated_preds = {
 				id: id,
 				text: predText,
-				correct: correct
+				correct: correct,
 			};
 
 			const response: Response = await fetch(API_UPDATE_PREDICTION_ENDPOINT, {
 				method: "POST",
 				headers: {
-					"Content-Type": "application/json"
+					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(updated_preds)
+				body: JSON.stringify(updated_preds),
 			});
 
 			if (response.ok) {
-				response.json().then(r => {
+				response.json().then((r) => {
 					console.log(r);
 				});
 			}
@@ -77,7 +77,7 @@ export const Predictions: React.FC = () => {
 
 	const handleCorrectPredictionClicked = (id: string) => {
 		updatePrediction(id, true);
-		setPredictions(predictions.filter(p => p[0] !== id));
+		setPredictions(predictions.filter((p) => p[0] !== id));
 
 		if (predictions.length <= 1) {
 			setPredText("");
@@ -86,7 +86,7 @@ export const Predictions: React.FC = () => {
 
 	const handleIncorrectPredictionClicked = (id: string) => {
 		updatePrediction(id, false);
-		setPredictions(predictions.filter(p => p[0] !== id));
+		setPredictions(predictions.filter((p) => p[0] !== id));
 
 		if (predictions.length <= 1) {
 			setPredText("");
@@ -126,14 +126,14 @@ export const Predictions: React.FC = () => {
 
 	const renderPredictions = () => {
 		let searchWords: string[] = [];
-		attnWeights.forEach(weight => {
+		attnWeights.forEach((weight) => {
 			searchWords.push(weight[0]);
 		});
 
 		let text: any;
 
 		if (predText) {
-			text = predText.split(" ").map(function(a, i) {
+			text = predText.split(" ").map(function (a, i) {
 				let [first, second] = applyColorsToWeights(searchWords, a);
 				let fontSize = first;
 				let color = second;
@@ -147,7 +147,7 @@ export const Predictions: React.FC = () => {
 									color: color,
 									fontSize: fontSize,
 									borderRadius: 2,
-									padding: 4
+									padding: 4,
 								}}
 								key={i}>
 								{a}
@@ -209,7 +209,7 @@ export const Predictions: React.FC = () => {
 												basic
 												color='green'
 												animated
-												onClick={e => {
+												onClick={(e) => {
 													handleCorrectPredictionClicked(p[0]);
 												}}>
 												<Button.Content visible>Correct</Button.Content>
@@ -221,7 +221,7 @@ export const Predictions: React.FC = () => {
 												basic
 												color='red'
 												animated
-												onClick={e => {
+												onClick={(e) => {
 													handleIncorrectPredictionClicked(p[0]);
 												}}>
 												<Button.Content visible>Incorrect</Button.Content>
@@ -247,7 +247,7 @@ export const Predictions: React.FC = () => {
 				<Form.Field>
 					<TextArea
 						value={text}
-						onChange={e => {
+						onChange={(e) => {
 							setText(e.currentTarget.value);
 						}}></TextArea>
 				</Form.Field>
