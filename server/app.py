@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 import transformers
+import csv
 
 from flask import Flask, jsonify, request
 from transformers import DistilBertModel, DistilBertTokenizer
@@ -18,7 +19,6 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 LABEL_COLS = ['pred_anger', 'pred_anticipation', 'pred_disgust', 'pred_fear', 'pred_joy',
               'pred_love', 'pred_optimism', 'pred_pessimism', 'pred_sadness', 'pred_surprise', 'pred_trust']
-
 
 tokenizer = DistilBertTokenizer.from_pretrained(args['distilbert_tokenizer'])
 
@@ -58,8 +58,37 @@ def predict_emotion(tweet, model, tokenizer, max_input_length, init_token_idx, e
 @app.route('/update_preds', methods=['POST'])
 def update_predictions():
     updated_preds = request.json
-    print(updated_preds)
-    return jsonify('Received!')
+
+    prediction = updated_preds['id']
+    text = updated_preds['text']
+    is_correct = updated_preds['correct']
+
+    with open('new_data.csv', 'a') as f:
+        writer = csv.writer(f)
+        if prediction == 'pred_anger' and is_correct:
+            writer.writerow(["{} {}".format(text.encode(), 'Anger')])
+        if prediction == 'pred_anticipation' and is_correct:
+            writer.writerow(["{} {}".format(text.encode(), 'Anticipation')])
+        if prediction == 'pred_disgust' and is_correct:
+            writer.writerow(["{} {}".format(text.encode(), 'Disgust')])
+        if prediction == 'pred_fear' and is_correct:
+            writer.writerow(["{} {}".format(text.encode(), 'Fear')])
+        if prediction == 'pred_joy' and is_correct:
+            writer.writerow(["{} {}".format(text.encode(), 'Joy')])
+        if prediction == 'pred_love' and is_correct:
+            writer.writerow(["{} {}".format(text.encode(), 'Love')])
+        if prediction == 'pred_optimism' and is_correct:
+            writer.writerow(["{} {}".format(text.encode(), 'Optimism')])
+        if prediction == 'pred_pessimism' and is_correct:
+            writer.writerow(["{} {}".format(text.encode(), 'Pessimism')])
+        if prediction == 'pred_sadness' and is_correct:
+            writer.writerow(["{} {}".format(text.encode(), 'Sadness')])
+        if prediction == 'pred_surprise' and is_correct:
+            writer.writerow(["{} {}".format(text.encode(), 'Surprise')])
+        if prediction == 'pred_trust' and is_correct:
+            writer.writerow(["{} {}".format(text.encode(), 'Trust')])
+
+    return jsonify('Updated!')
 
 
 @app.route('/')
