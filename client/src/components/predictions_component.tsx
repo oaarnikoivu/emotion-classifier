@@ -3,8 +3,8 @@ import { Emotion } from "./predictions_interfaces";
 import { Form, TextArea, Button, List, Icon } from "semantic-ui-react";
 import { Colors } from "../utils/colors";
 
-const API_PREDICTION_ENDPOINT: string = "http://localhost:5000/predictions";
-const API_UPDATE_PREDICTION_ENDPOINT: string = "http://localhost:5000/update_preds";
+const API_PREDICTION_ENDPOINT: string = "https://server.ainoa.wtf/predictions";
+const API_UPDATE_PREDICTION_ENDPOINT: string = "https://server.ainoa.wtf/update_preds";
 
 export const Predictions: React.FC = () => {
 	const [text, setText] = useState("");
