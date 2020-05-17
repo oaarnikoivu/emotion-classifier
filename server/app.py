@@ -4,7 +4,7 @@ import transformers
 import csv
 
 from flask import Flask, jsonify, request
-from transformers import DistilBertModel, DistilBertTokenizer
+from transformers import BertModel, BertTokenizer
 from flask_cors import CORS
 from collections import Counter
 from models.attention.attention_lstm import AttentionBiLSTM
@@ -13,19 +13,19 @@ from args import args
 app = Flask(__name__)
 CORS(app)
 
-LOCAL_MODEL_PATH = '/Users/olive/github/dissertation/server/models/attention/distilbert-lstm-model.pt'
+LOCAL_MODEL_PATH = '/Users/olive/github/dissertation/server/models/attention/bert-lstm-model.pt'
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 LABEL_COLS = ['pred_anger', 'pred_anticipation', 'pred_disgust', 'pred_fear', 'pred_joy',
               'pred_love', 'pred_optimism', 'pred_pessimism', 'pred_sadness', 'pred_surprise', 'pred_trust']
 
-tokenizer = DistilBertTokenizer.from_pretrained(args['distilbert_tokenizer'])
+tokenizer = BertTokenizer.from_pretrained(args['bert_tokenizer'])
 
 init_token_idx = tokenizer.cls_token_id
 eos_token_idx = tokenizer.sep_token_id
 
-max_input_length = tokenizer.max_model_input_sizes[args['distilbert_tokenizer']]
+max_input_length = tokenizer.max_model_input_sizes[args['bert_tokenizer']]
 
 model = AttentionBiLSTM(
     hidden_size=args['hidden_size'],

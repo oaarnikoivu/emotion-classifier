@@ -2,10 +2,10 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from transformers import DistilBertModel
+from transformers import BertModel
 from args import args
 
-bert = DistilBertModel.from_pretrained(args['distilbert_pretrained_model'])
+bert = BertModel.from_pretrained(args['bert_pretrained_model'])
 
 
 class Attention(nn.Module):
